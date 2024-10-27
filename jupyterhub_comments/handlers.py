@@ -14,44 +14,55 @@ try:
 except KeyError:
     path = os.path.dirname(os.path.abspath(__file__))
     DB_PATH = os.path.join(path, 'comments.db')
+try:
+    DB_GROUP = os.environ['JUPYTERHUB_COMMENTS_DB_GROUP']
+except KeyError:
+    DB_GROUP = 'jupyterhub-users'
 
 def init_comments_table():
     '''
     creates comments table if it does not exist yet,
     updates db file permissions to make it accessible
     '''
+    if not Path(DB_PATH).parent.exists():
+        Path(DB_PATH).parent.mkdir()
+        set_db_permissions(Path(DB_PATH).parent)
     with sqlite3.connect(DB_PATH) as connection:
         cursor = connection.cursor()
-        query = '''
-        create table if not exists comments (
-            id text primary key,
-            file_path text not null,
-            cell_id text not null,
-            editor_line number null,
-            editor_line_text text null,
-            username text not null,
-            text text not null,
-            timestamp integer not null,
-            updated_timestamp integer not null,
-            resolved boolean not null,
-            parent_id text null,
-            file_owner not null
-        );
-        '''
-        cursor.execute(query)
-        cursor.execute('create index if not exists idx_file_path on comments (file_path);')
-        cursor.execute('create index if not exists idx_ids on comments (id, parent_id);')
-    set_db_permissions()
+        cursor.execute("select name from sqlite_master where name = 'comments'")
+        db_exists = cursor.fetchone() is not None
+        if not db_exists:
+            query = '''
+            create table if not exists comments (
+                id text primary key,
+                file_path text not null,
+                cell_id text not null,
+                editor_line number null,
+                editor_line_text text null,
+                username text not null,
+                text text not null,
+                timestamp integer not null,
+                updated_timestamp integer not null,
+                resolved boolean not null,
+                parent_id text null,
+                file_owner not null
+            );
+            '''
+            cursor.execute(query)
+            cursor.execute('create index if not exists idx_file_path on comments (file_path);')
+            cursor.execute('create index if not exists idx_ids on comments (id, parent_id);')
+            set_db_permissions(DB_PATH)
 
-def set_db_permissions():
+def set_db_permissions(path):
     '''
     sets permissions on comments.db file to make in
-    writable by users in jupyterhub-users group
+    writable by users in DB_GROUP group
     '''
     from shutil import chown
-    os.chmod(DB_PATH, 0o664)
+    permission = 0o775 if (Path(path).is_dir()) else 0o664
+    os.chmod(path, permission)
     try:
-        chown(DB_PATH, group='jupyterhub-users')
+        chown(path, group=DB_GROUP)
     except LookupError:
         pass
 

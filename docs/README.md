@@ -1,74 +1,92 @@
 # Table of contents
-* [Features](#examples)
-  * [Add comments](#add-comments)
-  * [Reply to comments](#reply-to-comments)
-  * [Edit comments](#edit-comments)
-  * [Delete comments](#delete-comments)
-  * [Resolve comments](#resolve-comments)
-  * [Comment indicators](#comment-indicators)
-  * [Go to a comment](#go-to-a-comment)
+* [Features](#features)
+  * [Add Comments](#add-comments)
+  * [Reply to Comments](#reply-to-comments)
+  * [Edit Comments](#edit-comments)
+  * [Delete Comments](#delete-comments)
+  * [Resolve Comments](#resolve-comments)
+  * [Comment Indicators](#comment-indicators)
+  * [Go to a Comment](#go-to-a-comment)
     * [Notebook](#notebook)
     * [Editor](#document)
+* [Installation](#installation)
+* [Setup](#setup)
 * [Other](#other)
   * [Hotkeys](#hotkeys)
   * [Users](#users)
-  * [Full user names](#full-user-names)
+  * [Full User Names](#full-user-names)
 
 # Features
 
-## Add comments
+## Add Comments
 
-In notebooks comments are linked to cells that are currently selected and in documents they are linked to selected lines.
+In notebooks, comments are linked to the cells that are currently selected, and in documents, they are linked to selected lines.
 
-If notebooks cell is deleted or document line text changes, comment is linked to first cell / line by default
+If a notebook's cell is deleted or a document line's text changes, the comment is linked to the first cell/line by default.
 
 ![Image](images/add_comment.gif)
 
-## Reply to comments
+## Reply to Comments
 
-Replied can be added to level 1 comments
+Replies can be added to level 1 comments.
 
 ![Image](images/reply.gif)
 
-## Edit comments
+## Edit Comments
+
+You can edit comments you have authored.
 
 ![Image](images/reply.gif)
 
 ## Delete Comments
 
-If parent comment is deleted, whole thread is deleted
+If a parent comment is deleted, the entire thread is deleted.
 
 ![Image](images/delete.gif)
 
-## Resolve comments
+## Resolve Comments
 
-Level 1 comments can be resolved, which hides the whole thread by default
+Level 1 comments can be resolved, which hides the whole thread by default.
 
 ![Image](images/resolve.gif)
 
-## Comment indicators
+## Comment Indicators
 
-If comment is added to cell / line it is indicated by comment icon next to it. Clicking an icon opens comments interface and highlites a comment
+If a comment is added to a cell/line, it is indicated by a comment icon next to it. Clicking the icon opens the comments interface and highlights the comment.
 
 ![Image](images/focus_notebook.gif)
 
-## Go to a comment
+## Go to a Comment
 ### Notebook
 
-Clicking a notebook comment in the interface focuses a cell comment is linked to
+Clicking a notebook comment in the interface focuses on the cell the comment is linked to.
 
 ![Image](images/focus_interface.gif)
 ### Document
 
-Clicking a document comment in the interface focuses a line comment is linked to
+Clicking a document comment in the interface focuses on the line the comment is linked to.
 
 ![Image](images/focus_interface_editor.gif)
 
+# Installation
+
+To install the extension, execute:
+
+```bash
+pip install jupyterhub_comments
+```
+
+# Setup
+
+When jupyterLab is launched with extension installed, a comments.db file is created in the extension directory by default. You can override this behavior by specifying the `JUPYTERHUB_COMMENTS_DB_PATH` environment variable.
+
+It is necessary to provide `JUPYTERHUB_COMMENTS_DB_PATH` in a multi-user environment to ensure all users share the same comments.db file.
+
+The extension will create `JUPYTERHUB_COMMENTS_DB_PATH` directory with 775 permissions for the current user and all users in the `jupyterhub-users` group (this can be changed via `JUPYTERHUB_COMMENTS_DB_GROUP` environment variable) and give 664 permissions to the comments.db file itself.
+
+If the directory is created prior to launching JupyterLab with the installed extension, permissions should be set up manually, or the directory can be deleted so it will be recreated automatically on the next JupyterLab launch.
+
 # Other
-
-## Storing comments
-
-To share comments between users, provide `JUPYTERHUB_COMMENTS_DB_PATH` environment variable with directory where comments.db file should be stored. By default comments are stored in directory where extension is installed, which could be different for different users
 
 ## Hotkeys
 

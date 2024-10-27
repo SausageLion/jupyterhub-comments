@@ -25,7 +25,11 @@ To install the extension, execute:
 pip install jupyterhub_comments
 ```
 
-To share comments between users, provide `JUPYTERHUB_COMMENTS_DB_PATH` environment variable with directory where comments.db file should be stored. By default comments are stored in directory where extension is installed, which could be different for different users
+To enable comment sharing among users, set the JUPYTERHUB_COMMENTS_DB_PATH environment variable to specify the directory where the comments.db file should be stored. By default, the comments are saved in the directory where the extension is installed, which may vary between users or be non-writable if the extension is installed globally, thus preventing comment sharing.
+
+Ensure that Jupyter users have read, write, and execute permissions for the directory where the comments.db file is located, and read and write permissions for the file itself.
+
+The library will attempt to configure these permissions automatically by creating the specified directory from JUPYTERHUB_COMMENTS_DB_PATH with 775 permissions for the current user and the jupyterhub-users group, and setting 664 permissions on the comments.db file. You can change the default jupyterhub-users group by using the JUPYTERHUB_COMMENTS_DB_GROUP environment variable.
 
 ## Uninstall
 
